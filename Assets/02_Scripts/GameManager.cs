@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Time.timeScale = 1.0f;
+        Cursor.lockState = CursorLockMode.Locked;
         clearGame = false;
 
         gameClear.gameObject.SetActive(false);
@@ -75,6 +76,9 @@ public class GameManager : MonoBehaviour
         reStart.gameObject.SetActive(true);
         exitGame.gameObject.SetActive(true);
         Time.timeScale = 0;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
     public void ShowWeedUI()
     {
