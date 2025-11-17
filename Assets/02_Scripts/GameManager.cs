@@ -4,6 +4,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public enum GameState
+{
+    Playing,
+    Clear,
+}
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -19,9 +24,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform exitGame;
     [SerializeField] private Transform startGame;
 
-    private int scoreCount = 0;
-    private bool clearGame;
+    private int scoreCount = 0;   
 
+    public GameState State { get; private set; } = GameState.Playing;
     private void Awake()
     {        
         if(Instance == null)
@@ -36,24 +41,44 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        Time.timeScale = 1.0f;
-        Cursor.lockState = CursorLockMode.Locked;
-        clearGame = false;
-
-        gameClear.gameObject.SetActive(false);
-        reStart.gameObject.SetActive(false);
-        exitGame.gameObject.SetActive(false);      
+        SetState(GameState.Playing);
     }
     void Update()
     {
+        if (spwd == null) return;
+
         if(score != null)
         {
            score.text = $"Score : {scoreCount} / {spwd.spawnCount}";
         }
-        if (scoreCount >= spwd.spawnCount)
+        if (State == GameState.Playing && scoreCount >= spwd.spawnCount)
         {
-            clearGame = true;
-            ClearGame();
+            SetState(GameState.Clear);
+        }
+    }
+    public void SetState(GameState newState)
+    {
+        State = newState;
+
+        switch(State)
+        {
+            case GameState.Playing:
+                Time.timeScale = 1.0f;
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                gameClear.gameObject.SetActive(false);
+                reStart.gameObject.SetActive(false);
+                exitGame.gameObject.SetActive(false);
+                break;
+
+            case GameState.Clear:
+                Time.timeScale = 0.0f;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                gameClear.gameObject.SetActive(true);
+                reStart.gameObject.SetActive(true);
+                exitGame.gameObject.SetActive(true);
+                break;
         }
     }
     public void DisplayScore(int curscore)
@@ -62,24 +87,13 @@ public class GameManager : MonoBehaviour
     }   
     public void ReStart()
     {
-        Time.timeScale = 1.0f;
-        clearGame = false;
+        Time.timeScale = 1.0f;        
         SceneManager.LoadScene("SampleScene");
     }
     public void ExitGame()
     {
        Application.Quit();
-    }   
-    private void ClearGame()
-    {
-        gameClear.gameObject.SetActive(true);
-        reStart.gameObject.SetActive(true);
-        exitGame.gameObject.SetActive(true);
-        Time.timeScale = 0;
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-    }
+    }      
     public void ShowWeedUI()
     {
         if (weedUi == null) return;
@@ -91,7 +105,5 @@ public class GameManager : MonoBehaviour
     {
         if (weedUi == null) return;
         weedUi.gameObject.SetActive(false);
-
-
     }
 }

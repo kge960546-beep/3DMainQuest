@@ -20,11 +20,10 @@ public class PlayerMove : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         anim = GetComponentInChildren<Animator>();
-        
-        
     }
     void Update()
     {
+        if (GameManager.Instance.State != GameState.Playing) return;
         HandleMove();
         HandlJump();
     }

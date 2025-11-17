@@ -16,6 +16,7 @@ public class Camara : MonoBehaviour
    
     void Update()
     {
+        if (GameManager.Instance.State != GameState.Playing) return;
         transform.position = target.position + offset;
 
         xRototion += Input.GetAxis("Mouse X");

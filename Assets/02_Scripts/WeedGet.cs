@@ -32,16 +32,18 @@ public class WeedGet : MonoBehaviour
     {        
         if(isPlayer && Input.GetKeyDown(KeyCode.E))
         {
+            isPlayer = false;
             audio.Stop();
             audio.Play();
             StartCoroutine(ActiveFalse());
             GameManager.Instance.HideWeedUI();
             GameManager.Instance.DisplayScore(1);
+            GetComponent<Collider>().enabled = false;
         }
     }
     IEnumerator ActiveFalse()
     {
-        yield return new WaitForSeconds(1.3f);
+        yield return new WaitForSecondsRealtime(1.3f);
         gameObject.SetActive(false);
     }
 }
